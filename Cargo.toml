@@ -8,4 +8,9 @@ edition = "2021"
 [dependencies]
 
 [package.metadata.rust-analyzer]
-rustc_private=true
+rustc_private = true
+
+[lib]
+name = "rustc_codegen_spir"
+# Ref: https://doc.rust-lang.org/beta/unstable-book/compiler-flags/codegen-backend.html
+crate-type = ["dylib"]

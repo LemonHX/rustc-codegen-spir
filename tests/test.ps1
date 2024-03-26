@@ -1,1 +1,0 @@
-rustc .\test-shader.rs -Zcodegen-backend="../target/debug/rustc_codegen_spir.dll" -Ctarget-feature="+Int8,+Int16,+Int64,+Float64,+ShaderClockKHR,+ext:SPV_KHR_shader_clock" --target spirv-unknown-vulkan1.1

@@ -336,7 +336,9 @@ impl<'a, 'tcx> IntrinsicCallMethods<'tcx> for Builder<'a, 'tcx> {
                 self.zombie(undef.def(self), "memcmp not implemented");
                 undef
             }
-
+            sym::black_box => {
+                args[0].immediate()
+            }
             _ => self.fatal(format!("TODO: Unknown intrinsic '{name}'")),
         };
 

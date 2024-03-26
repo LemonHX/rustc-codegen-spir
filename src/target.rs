@@ -143,12 +143,43 @@ impl std::fmt::Display for SpirvTarget {
     }
 }
 
+const all_valid_targets: [&'static str; 24] = [
+    "spirv-unknown-spv1.0",
+    "spirv-unknown-spv1.1",
+    "spirv-unknown-spv1.2",
+    "spirv-unknown-spv1.3",
+    "spirv-unknown-spv1.4",
+    "spirv-unknown-spv1.5",
+    "spirv-unknown-vulkan1.0",
+    "spirv-unknown-vulkan1.1",
+    "spirv-unknown-vulkan1.1spv1.4",
+    "spirv-unknown-vulkan1.2",
+    "spirv-unknown-webgpu0",
+    "spirv-unknown-opengl4.0",
+    "spirv-unknown-opengl4.1",
+    "spirv-unknown-opengl4.2",
+    "spirv-unknown-opengl4.3",
+    "spirv-unknown-opengl4.5",
+    "spirv-unknown-opencl1.2",
+    "spirv-unknown-opencl1.2embedded",
+    "spirv-unknown-opencl2.0",
+    "spirv-unknown-opencl2.0embedded",
+    "spirv-unknown-opencl2.1",
+    "spirv-unknown-opencl2.1embedded",
+    "spirv-unknown-opencl2.2",
+    "spirv-unknown-opencl2.2embedded",
+];
+
+
+
+
+
 #[derive(Debug)]
 pub struct InvalidTarget(String);
 
 impl std::error::Error for InvalidTarget {}
 impl std::fmt::Display for InvalidTarget {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Invalid target `{}`.", self.0)
+        write!(f, "Invalid target `{}`.\n Valid targets: {:#?}", self.0, all_valid_targets)
     }
 }

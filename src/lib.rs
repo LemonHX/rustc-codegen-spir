@@ -39,10 +39,7 @@ mod target_feature;
 
 use core::any::Any;
 use std::{
-    fs::{create_dir_all, File},
-    io::{Cursor, Write},
-    path::Path,
-    sync::Arc,
+    fs::{create_dir_all, File}, io::{Cursor, Write}, path::Path, str::FromStr, sync::Arc
 };
 
 use builder::Builder;
@@ -77,6 +74,7 @@ use rustc_session::{
 };
 use rustc_span::{sym, ErrorGuaranteed, Symbol};
 use rustc_target::spec::{Target, TargetTriple};
+use target::SpirvTarget;
 
 fn dump_mir(tcx: TyCtxt<'_>, mono_items: &[(MonoItem<'_>, MonoItemData)], path: &Path) {
     create_dir_all(path.parent().unwrap()).unwrap();
@@ -181,6 +179,7 @@ impl Drop for DumpModuleOnPanic<'_, '_, '_> {
 
 #[derive(Clone)]
 pub struct SpirCodegenBackend;
+
 
 impl WriteBackendMethods for SpirCodegenBackend {
     type Module = Vec<u32>;
@@ -287,14 +286,14 @@ impl WriteBackendMethods for SpirCodegenBackend {
 }
 
 impl ExtraBackendMethods for SpirCodegenBackend {
-    fn codegen_allocator(
+    fn codegen_allocator<'tcx>(
         &self,
-        _: TyCtxt<'_>,
-        _: &str,
-        _: AllocatorKind,
-        _: AllocatorKind,
+        tcx: TyCtxt<'tcx>,
+        module_name: &str,
+        kind: AllocatorKind,
+        alloc_error_handler_kind: AllocatorKind,
     ) -> Self::Module {
-        todo!()
+        vec![]
     }
 
     fn compile_codegen_unit(
@@ -375,6 +374,7 @@ impl ExtraBackendMethods for SpirCodegenBackend {
 }
 
 impl CodegenBackend for SpirCodegenBackend {
+
     fn locale_resource(&self) -> &'static str {
         rustc_errors::DEFAULT_LOCALE_RESOURCE
     }
@@ -398,7 +398,7 @@ impl CodegenBackend for SpirCodegenBackend {
                 Some(target
                 .parse::<target::SpirvTarget>()
                 .map(|target| target.rustc_target())
-                .unwrap())
+.unwrap())
             },
             TargetTriple::TargetJson { .. } => None,
         }

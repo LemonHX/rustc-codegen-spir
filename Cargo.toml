@@ -1,6 +1,8 @@
 [package]
-name = "rust-codegen-spir"
-version = "0.1.0"
+name = "rustc_codegen_spir"
+description = "A compiler plugin for Rust that generates SPIR-V code"
+license = "MIT"
+version = "0.0.0"
 edition = "2021"
 
 [dependencies]

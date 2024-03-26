@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "rust-codegen-spir"
-version = "0.1.0"
+name = "rustc_codegen_spir"
+version = "0.0.0"

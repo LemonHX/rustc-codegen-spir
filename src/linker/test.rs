@@ -143,7 +143,6 @@ fn link_with_linker_opts(
         let target_cfg = rustc_session::config::build_target_config(
             &early_error_handler,
             &sopts,
-            None,
             &sysroot,
         );
 

@@ -109,30 +109,18 @@ impl std::str::FromStr for SpirvTarget {
     type Err = InvalidTarget;
 
     fn from_str(target: &str) -> Result<Self, Self::Err> {
-        let mut iter = target.split('-');
+        let iter = target.split('-').collect::<Vec<&str>>();
         let error = || InvalidTarget(target.into());
 
-        if iter.next().map_or(true, |arch| arch != ARCH) {
+        if iter[0] != ARCH {
             return Err(error());
         }
 
-        let vendor = iter.next().map(From::from).ok_or_else(error)?;
+        let vendor = iter[1].to_string();
 
-        let env = iter
-            .next()
-            .and_then(|env| env.parse().ok())
-            .ok_or_else(error)?;
-
-        if iter.next().is_some() {
-            return Err(error());
-        }
+        let env = TargetEnv::from_str(iter[2]).unwrap();
 
         let result = Self { env, vendor };
-
-        if result.memory_model() == MemoryModel::OpenCL {
-            return Err(error());
-        }
-
         Ok(result)
     }
 }
@@ -143,7 +131,7 @@ impl std::fmt::Display for SpirvTarget {
     }
 }
 
-const all_valid_targets: [&'static str; 24] = [
+pub(crate) const ALL_VALID_TARGETS: [&'static str; 24] = [
     "spirv-unknown-spv1.0",
     "spirv-unknown-spv1.1",
     "spirv-unknown-spv1.2",
@@ -170,16 +158,48 @@ const all_valid_targets: [&'static str; 24] = [
     "spirv-unknown-opencl2.2embedded",
 ];
 
-
-
-
-
 #[derive(Debug)]
 pub struct InvalidTarget(String);
 
 impl std::error::Error for InvalidTarget {}
 impl std::fmt::Display for InvalidTarget {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Invalid target `{}`.\n Valid targets: {:#?}", self.0, all_valid_targets)
+        write!(
+            f,
+            "Invalid target `{}`.\n Valid targets: {:#?}",
+            self.0, ALL_VALID_TARGETS
+        )
+    }
+}
+
+#[cfg(test)]
+mod register_targets {
+    use std::{fs::File, io::Write, path::Path, str::FromStr};
+
+    use rustc_target::json::ToJson;
+
+    use crate::target::SpirvTarget;
+
+    use super::ALL_VALID_TARGETS;
+
+    #[test]
+    fn write_target_json() {
+        // generate target json file if it is not exist
+        let target_path = Path::new("./target");
+        ALL_VALID_TARGETS.iter().for_each(|target| {
+            let target_json = target_path.join(format!("{}.json", target));
+            if let Ok(mut file) = File::create_new(target_json.clone()) {
+                file.write_all(
+                    SpirvTarget::from_str(target)
+                        .unwrap()
+                        .rustc_target()
+                        .to_json()
+                        .to_string()
+                        .as_bytes(),
+                )
+                .unwrap();
+                println!("Generating target json file: {:?}", target_json);
+            }
+        });
     }
 }

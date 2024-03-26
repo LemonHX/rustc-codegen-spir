@@ -1,0 +1,20 @@
+
+[package]
+name = "test_shader"
+description = "test_shader"
+license = "MIT"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+
+
+[dev-dependencies]
+
+
+
+[lib]
+name = "test_shader"
+# Ref: https://doc.rust-lang.org/beta/unstable-book/compiler-flags/codegen-backend.html
+crate-type = ["dylib"]
+

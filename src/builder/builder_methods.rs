@@ -25,7 +25,7 @@ use rustc_data_structures::fx::FxHashSet;
 use rustc_middle::{
     bug,
     middle::codegen_fn_attrs::CodegenFnAttrs,
-    ty::{layout::LayoutOf, Ty},
+    ty::{layout::LayoutOf, Instance, Ty},
 };
 use rustc_span::Span;
 use rustc_target::abi::{call::FnAbi, Abi, Align, Scalar, Size, WrappingRange};
@@ -1108,9 +1108,10 @@ impl<'a, 'tcx> BuilderMethods<'a, 'tcx> for Builder<'a, 'tcx> {
         then: Self::BasicBlock,
         _catch: Self::BasicBlock,
         funclet: Option<&Self::Funclet>,
+        _instance: Option<Instance<'tcx>>,
     ) -> Self::Value {
         // Exceptions don't exist, jump directly to then block
-        let result = self.call(llty, fn_attrs, fn_abi, llfn, args, funclet);
+        let result = self.call(llty, fn_attrs, fn_abi, llfn, args, funclet, _instance);
         self.emit().branch(then).unwrap();
         result
     }
@@ -2483,6 +2484,7 @@ impl<'a, 'tcx> BuilderMethods<'a, 'tcx> for Builder<'a, 'tcx> {
         callee: Self::Value,
         args: &[Self::Value],
         funclet: Option<&Self::Funclet>,
+        _instance: Option<Instance<'tcx>>,
     ) -> Self::Value {
         if funclet.is_some() {
             self.fatal("TODO: Funclets are not supported");

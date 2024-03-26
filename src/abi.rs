@@ -552,7 +552,7 @@ fn dig_scalar_pointee<'tcx>(
     if let FieldsShape::Primitive = layout.fields {
         assert_eq!(offset, Size::ZERO);
         let pointee = match *layout.ty.kind() {
-            TyKind::Ref(_, pointee_ty, _) | TyKind::RawPtr(TypeAndMut { ty: pointee_ty, .. }) => {
+            TyKind::Ref(_, pointee_ty, _) | TyKind::RawPtr(pointee_ty, _) => {
                 PointeeTy::Ty(cx.layout_of(pointee_ty))
             }
             TyKind::FnPtr(sig) => PointeeTy::Fn(sig),

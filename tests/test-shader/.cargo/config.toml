@@ -1,0 +1,11 @@
+
+[unstable]
+build-std = ["core"]
+
+[build]
+rustflags = [
+    "-Zcodegen-backend=C:\\Users\\runzh\\Desktop\\Rust\\rustc-codegen-spir\\target\\debug\\rustc_codegen_spir.dll",
+    "-Ctarget-feature=+Int8,+Int16,+Int64,+Float64,+ShaderClockKHR,+ext:SPV_KHR_shader_clock",
+    "-Zcrate-attr=feature(register_tool)",
+    "-Zcrate-attr=register_tool(rust_gpu)",
+]

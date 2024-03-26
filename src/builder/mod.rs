@@ -18,15 +18,13 @@ use rustc_codegen_ssa::{
 };
 use rustc_errors::{Diag, DiagMessage, ErrorGuaranteed};
 use rustc_middle::{
-    mir::Coverage,
-    span_bug,
-    ty::{
+    mir::coverage::CoverageKind, span_bug, ty::{
         layout::{
             FnAbiError, FnAbiOfHelpers, FnAbiRequest, HasParamEnv, HasTyCtxt, LayoutError,
             LayoutOfHelpers, TyAndLayout,
         },
         Instance, ParamEnv, Ty, TyCtxt,
-    },
+    }
 };
 use rustc_span::{def_id::DefId, Span, DUMMY_SP};
 use rustc_target::{
@@ -343,7 +341,7 @@ impl<'a, 'tcx> Deref for Builder<'a, 'tcx> {
 }
 
 impl<'a, 'tcx> CoverageInfoBuilderMethods<'tcx> for Builder<'a, 'tcx> {
-    fn add_coverage(&mut self, _instance: Instance<'tcx>, _coverage: &Coverage) {}
+    fn add_coverage(&mut self, _instance: Instance<'tcx>, _coverage: &CoverageKind) {}
 }
 
 impl<'a, 'tcx> DebugInfoBuilderMethods for Builder<'a, 'tcx> {

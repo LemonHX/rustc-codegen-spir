@@ -339,6 +339,10 @@ impl<'a, 'tcx> IntrinsicCallMethods<'tcx> for Builder<'a, 'tcx> {
             sym::black_box => {
                 args[0].immediate()
             }
+            sym::is_val_statically_known => {
+                //TODO: properly implement this
+                self.constant_bool(self.span(), false)
+            }
             _ => self.fatal(format!("TODO: Unknown intrinsic '{name}'")),
         };
 

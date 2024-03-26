@@ -73,8 +73,8 @@ use rustc_session::{
     Session,
 };
 use rustc_span::{sym, ErrorGuaranteed, Symbol};
-use rustc_target::spec::{Target, TargetTriple};
-use target::SpirvTarget;
+use rustc_target::{json::ToJson, spec::{Target, TargetTriple}};
+use target::{SpirvTarget, ALL_VALID_TARGETS};
 
 fn dump_mir(tcx: TyCtxt<'_>, mono_items: &[(MonoItem<'_>, MonoItemData)], path: &Path) {
     create_dir_all(path.parent().unwrap()).unwrap();
@@ -390,20 +390,23 @@ impl CodegenBackend for SpirCodegenBackend {
             .collect()
     }
 
-    // #122810
-    fn target_override(&self, opts: &config::Options) -> Option<Target> {
-        match opts.target_triple {
-            TargetTriple::TargetTriple(ref target) => {
-                println!("providing target {}", target);
-                Some(target
-                .parse::<target::SpirvTarget>()
-                .map(|target| target.rustc_target())
-.unwrap())
-            },
-            TargetTriple::TargetJson { .. } => None,
-        }
-        // panic!("{:#?}", opts.target_triple)
+    fn init(&self, sess: &Session) {
+
     }
+//     // #122810
+//     fn target_override(&self, opts: &config::Options) -> Option<Target> {
+//         match opts.target_triple {
+//             TargetTriple::TargetTriple(ref target) => {
+//                 println!("providing target {}", target);
+//                 Some(target
+//                 .parse::<target::SpirvTarget>()
+//                 .map(|target| target.rustc_target())
+// .unwrap())
+//             },
+//             TargetTriple::TargetJson { .. } => None,
+//         }
+//         // panic!("{:#?}", opts.target_triple)
+//     }
 
     fn provide(&self, providers: &mut rustc_middle::util::Providers) {
         // FIXME(eddyb) this is currently only passed back to us, specifically
